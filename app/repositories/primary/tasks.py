@@ -1,6 +1,7 @@
 from .db import db_session
 
 from ...models.task import Task
+
 def queue_task(task: Task):
     """Queue a task for processing."""
     with db_session() as connection:

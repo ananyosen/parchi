@@ -4,8 +4,13 @@ import uuid
 import json
 
 from ..utils import env, fs
-from ..repositories.primary.tasks import queue_task
+from ..utils import file as file_utils
+
+from ..repositories.primary import tasks as task_repo
+from ..repositories.primary import assets as asset_repo
+
 from ..models.task import Task
+from ..models.asset import Asset
 
 async def save_file(file: UploadFile):
     """
@@ -18,7 +23,23 @@ async def save_file(file: UploadFile):
     file_location = os.path.join(asset_dir, f"{unique_id}_{file.filename}")
     with open(file_location, "wb") as f:
         content = await file.read()
+        content_hash = file_utils.generate_hash(content)
+        is_duplicate = asset_repo.check_is_duplicate_asset(content_hash)
+        if is_duplicate:
+            return {"error": "file already exists", "status": "duplicate"}
         f.write(content)
+
+    content_type = file.content_type or "application/octet-stream"
+    asset = Asset(
+        uuid=str(unique_id),
+        filename=file.filename,
+        metadata=json.dumps({"content_type": content_type}),
+        path=file_location,
+        content_type=content_type,
+        content_hash=file_utils.generate_hash(content),
+        status="CREATED"
+    )
+    asset_repo.save_asset(asset)
 
     task = Task(
         type="document",
@@ -27,5 +48,12 @@ async def save_file(file: UploadFile):
         status="CREATED",
         uuid=str(uuid.uuid4())
     )
-    queue_task(task)
+    task_repo.queue_task(task)
     return {"filename": file.filename, "location": file_location, "status": "queued"}
+
+async def get_all_documents():
+    """
+    Retrieve all documents from the asset repository.
+    """
+    assets = asset_repo.get_all_assets()
+    return assets
