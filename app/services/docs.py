@@ -1,9 +1,11 @@
 import os
 from fastapi import UploadFile
 import uuid
+import json
 
 from ..utils import env, fs
-from ..tasks import docs as docs_tasks
+from ..repositories.primary.tasks import queue_task
+from ..models.task import Task
 
 async def save_file(file: UploadFile):
     """
@@ -12,8 +14,18 @@ async def save_file(file: UploadFile):
     config = env.get_config()
     asset_dir = os.path.join(config['asset_store_path'], 'assets')
     fs.check_or_create_directory(asset_dir)
-    file_location = os.path.join(asset_dir, f"{uuid.uuid4()}_{file.filename}")
+    unique_id = uuid.uuid4()
+    file_location = os.path.join(asset_dir, f"{unique_id}_{file.filename}")
     with open(file_location, "wb") as f:
         content = await file.read()
         f.write(content)
-    return {"filename": file.filename, "location": docs_tasks.extract_text_from_image(file_location)}
+
+    task = Task(
+        type="document",
+        metadata=json.dumps({"filename": file.filename, "location": file_location, "file_id": str(unique_id)}),
+        description="Document processing task",
+        status="CREATED",
+        uuid=str(uuid.uuid4())
+    )
+    queue_task(task)
+    return {"filename": file.filename, "location": file_location, "status": "queued"}
