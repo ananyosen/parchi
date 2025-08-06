@@ -3,6 +3,7 @@ from fastapi import UploadFile
 import uuid
 
 from ..utils import env, fs
+from ..tasks import docs as docs_tasks
 
 async def save_file(file: UploadFile):
     """
@@ -15,4 +16,4 @@ async def save_file(file: UploadFile):
     with open(file_location, "wb") as f:
         content = await file.read()
         f.write(content)
-    return {"filename": file.filename, "location": file_location}
+    return {"filename": file.filename, "location": docs_tasks.extract_text_from_image(file_location)}
