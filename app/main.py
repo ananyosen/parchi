@@ -1,17 +1,23 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from apscheduler.schedulers.background import BackgroundScheduler
 
-from app.repositories.primary.db import initialize_db
+from .repositories.primary.db import initialize_db
 
 from .routers import docs, tasks
 
 from .utils import env
-from .repositories.primary.db import initialize_db
+from .jobs import jobs as scheduler_jobs
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(scheduler_jobs.start_task_processing, "interval", seconds=10)
+scheduler.start()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     initialize_db()
     yield
+    scheduler.shutdown(wait=False)
 
 app = FastAPI(lifespan=lifespan)
 

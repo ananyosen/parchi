@@ -42,7 +42,7 @@ async def save_file(file: UploadFile):
     asset_repo.save_asset(asset)
 
     task = Task(
-        type="document",
+        type="extract",
         metadata=json.dumps({"filename": file.filename, "location": file_location, "file_id": str(unique_id)}),
         description="Document processing task",
         status="CREATED",
