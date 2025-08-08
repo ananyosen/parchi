@@ -9,3 +9,5 @@ langchain-community
 sentence-transformers
 torch
 transformers
+langchain-huggingface
+langchain-chroma

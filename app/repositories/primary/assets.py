@@ -48,7 +48,7 @@ def update_asset_text(asset: Asset):
     with db_session() as connection:
         cursor = connection.cursor()
         cursor.execute(
-            "UPDATE assets SET extracted_text = ? WHERE uuid = ?",
-            (asset.extracted_text, asset.uuid)
+            "UPDATE assets SET extracted_text = ?, status = ? WHERE uuid = ?",
+            (asset.extracted_text, asset.status, asset.uuid)
         )
         connection.commit()
