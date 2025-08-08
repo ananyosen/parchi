@@ -5,3 +5,7 @@ apscheduler
 
 chromadb
 langchain
+langchain-community
+sentence-transformers
+torch
+transformers

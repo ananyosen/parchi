@@ -22,3 +22,14 @@ def get_primary_db_path():
     """Get the path for the primary database."""
     db_path = os.path.join(get_persist_path(), 'primary.db')
     return db_path
+
+def get_vector_db_path():
+    """Get the path for the vector database."""
+    vector_db_path = os.path.join(get_persist_path(), 'vector/')
+    return vector_db_path
+
+def get_model_path():
+    """Get the path for a specific model."""
+    model_path = os.path.join('.', 'models')
+    check_or_create_directory(model_path)
+    return model_path

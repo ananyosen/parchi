@@ -1,5 +1,6 @@
 import os
 from fastapi import UploadFile
+from fastapi.responses import FileResponse
 import uuid
 import json
 
@@ -8,6 +9,8 @@ from ..utils import file as file_utils
 
 from ..repositories.primary import tasks as task_repo
 from ..repositories.primary import assets as asset_repo
+
+from ..repositories.vector import ml as ml_repo
 
 from ..models.task import Task
 from ..models.asset import Asset
@@ -57,3 +60,34 @@ async def get_all_documents():
     """
     assets = asset_repo.get_all_assets()
     return assets
+
+async def search_documents(query: str) -> list:
+    """
+    Search documents in the vector database.
+    """
+    if not query:
+        return []
+
+    results = ml_repo.query_vector_db(query)
+    return results
+
+async def debug_search_documents(query: str) -> dict:
+    """
+    Debug search documents in the vector database.
+    """
+    results = await search_documents(query)
+    if not results:
+        return {"error": "No documents found"}
+    
+    first_result = results[0]
+    asset = asset_repo.get_asset_by_id(first_result.metadata.get("file_id"))
+    
+    if not asset:
+        return {"error": "Asset not found"}
+    
+    return FileResponse(
+        asset.path,
+        media_type=asset.content_type,
+        filename=asset.filename,
+        headers={"Content-Disposition": f"inline; filename={asset.filename}"}
+    )

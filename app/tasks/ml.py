@@ -6,6 +6,7 @@ import uuid
 from ..models.task import Task
 from ..repositories.primary import tasks as task_repo
 from ..repositories.primary import assets as asset_repo
+from ..repositories.vector import ml as ml_repo
 from ..constants.types import IMAGE_CONTENT_TYPES
 
 def extract_text_from_asset(extract_task: Task) -> str:
@@ -52,3 +53,33 @@ def extract_text_from_asset(extract_task: Task) -> str:
             return "Text extracted successfully"
     except Exception as e:
         return f"Error extracting text: {e}"
+    
+def index_text_to_vector_db(index_task: Task) -> str:
+    """Ingest extracted text into the vector database.
+    Args:
+        index_task (Task): The task containing the text to ingest.
+    Returns:
+        str: Status message indicating success or failure.
+    """
+    try:
+        index_task.status = "PROCESSING"
+        task_repo.update_task_status(index_task.uuid, index_task.status)
+        
+        metadata = json.loads(index_task.metadata)
+        file_id = metadata.get("file_id")
+        extracted_text = metadata.get("extracted_text")
+        asset = asset_repo.get_asset_by_id(file_id)
+        
+        if not extracted_text or asset is None:
+            index_task.status = "FAILED"
+            task_repo.update_task_status(index_task.uuid, index_task.status)
+            return "No text to ingest"
+
+        ml_repo.index_text(extracted_text, {"file_id": file_id, "file_path": asset.path})
+        index_task.status = "COMPLETED"
+        task_repo.update_task_status(index_task.uuid, index_task.status)
+        print(f"Text ingested successfully for asset id {file_id}")
+        
+        return "Text ingested successfully"
+    except Exception as e:
+        return f"Error ingesting text: {e}"

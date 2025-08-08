@@ -6,7 +6,7 @@ def validate_env_variables():
     if not os.getenv(env_constants.ASSET_STORE_PATH):
         raise EnvironmentError(f"{env_constants.ASSET_STORE_PATH} environment variable is not set.")
     
-if not os.getenv(env_constants.PERSIST_PATH):
+    if not os.getenv(env_constants.PERSIST_PATH):
         raise EnvironmentError(f"{env_constants.PERSIST_PATH} environment variable is not set.")
     
 def get_config():
