@@ -49,7 +49,8 @@ def initialize_db():
                 path TEXT NOT NULL,
                 content_type TEXT NOT NULL,
                 content_hash TEXT NOT NULL,
-                status TEXT NOT NULL
+                status TEXT NOT NULL,
+                extracted_text TEXT NOT NULL
             )
         ''')
         conn.execute('''

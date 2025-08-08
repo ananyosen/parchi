@@ -18,6 +18,8 @@ def start_task_processing():
         created_tasks = task_repo.get_tasks_by_status("CREATED")
         print("tasks pending " + str(len(created_tasks)))
         for task in created_tasks:
+            # possible concurrency issues if 2 tasks try to update the same asset
+            # need to solve using a db lock
             print(f"Processing task {task.uuid} of type {task.type}")
             if task.type == "extract":
                 result = extract_text_from_asset(task)

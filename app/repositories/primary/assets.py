@@ -42,3 +42,13 @@ def get_all_assets(page: int = 0, page_size: int = 100) -> list[Asset]:
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM assets LIMIT ? OFFSET ?", (page_size, page * page_size))
         return [Asset(**row) for row in cursor.fetchall()]
+
+def update_asset_text(asset: Asset):
+    """Update the extracted text of an existing asset in the database."""
+    with db_session() as connection:
+        cursor = connection.cursor()
+        cursor.execute(
+            "UPDATE assets SET extracted_text = ? WHERE uuid = ?",
+            (asset.extracted_text, asset.uuid)
+        )
+        connection.commit()

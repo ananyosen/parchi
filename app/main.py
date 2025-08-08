@@ -11,11 +11,11 @@ from .jobs import jobs as scheduler_jobs
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(scheduler_jobs.start_task_processing, "interval", seconds=10)
-scheduler.start()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     initialize_db()
+    scheduler.start()
     yield
     scheduler.shutdown(wait=False)
 

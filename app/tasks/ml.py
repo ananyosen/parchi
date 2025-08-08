@@ -33,7 +33,7 @@ def extract_text_from_asset(extract_task: Task) -> str:
             task_repo.update_task_status(extract_task.uuid, extract_task.status)
             return "Unsupported image type"
         with PIL.Image.open(asset_path) as img:
-            text = pytesseract.image_to_string(img)
+            extracted_text = pytesseract.image_to_string(img)
             extract_task.status = "COMPLETED"
             task_repo.update_task_status(extract_task.uuid, extract_task.status)
             print(f"task complete for asset id {asset_id}")
@@ -43,12 +43,16 @@ def extract_text_from_asset(extract_task: Task) -> str:
                 status="CREATED",
                 metadata=json.dumps({
                     "file_id": asset_id,
-                    "extracted_text": text
+                    "extracted_text": extracted_text
                 }),
                 description=f"Indexing text extracted from {asset.filename}",
                 uuid=str(uuid.uuid4())
             )
             task_repo.queue_task(index_task)
+
+            asset.extracted_text = extracted_text
+            asset.status = "PROCESSED"
+            asset_repo.update_asset_text(asset)
 
             return "Text extracted successfully"
     except Exception as e:

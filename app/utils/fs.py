@@ -30,6 +30,6 @@ def get_vector_db_path():
 
 def get_model_path():
     """Get the path for a specific model."""
-    model_path = os.path.join('.', 'models')
+    model_path = os.path.join('.', 'ml_models')
     check_or_create_directory(model_path)
     return model_path

@@ -10,3 +10,4 @@ class Asset:
     content_type: str = None
     content_hash: str = None
     status: str = None
+    extracted_text: str = None
