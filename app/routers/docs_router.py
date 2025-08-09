@@ -9,11 +9,11 @@ router = APIRouter(
 )
 
 @router.post("/upload")
-async def upload_files(file: UploadFile):
+async def upload_files(files: list[UploadFile]):
     """
     Upload a file and return its filename.
     """
-    return await assets_service.save_file(file)
+    return [await assets_service.save_file(file) for file in files]
 
 @router.get("/")
 async def get_docs():
