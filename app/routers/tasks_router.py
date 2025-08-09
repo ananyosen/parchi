@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile
 
-from ..services import tasks as tasks_service
+from ..services import tasks_service as tasks_service
 
 router = APIRouter(
     prefix="/tasks",

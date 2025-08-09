@@ -3,9 +3,9 @@ from contextlib import contextmanager
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from ...constants.types import CHROMA_COLLECTION_NAME
+from ...constants.type_constants import CHROMA_COLLECTION_NAME
 
-from ...utils.fs import get_model_path, get_vector_db_path
+from ...utils.fs_utils import get_model_path, get_vector_db_path
 
 @contextmanager
 def vector_db_session():

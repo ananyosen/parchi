@@ -1,5 +1,5 @@
 import os
-from ..constants import env as env_constants
+from ..constants import env_constants as env_constants
 
 def validate_env_variables():
     """Check if required environment variables are set."""

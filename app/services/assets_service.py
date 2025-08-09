@@ -4,11 +4,11 @@ from fastapi.responses import FileResponse
 import uuid
 import json
 
-from ..utils import env, fs
-from ..utils import file as file_utils
+from ..utils import env_utils, fs_utils
+from ..utils import file_utils as file_utils
 
-from ..repositories.primary import tasks as task_repo
-from ..repositories.primary import assets as asset_repo
+from ..repositories.primary import tasks_repo as task_repo
+from ..repositories.primary import assets_repo as asset_repo
 
 from ..repositories.vector import ml as ml_repo
 
@@ -19,9 +19,9 @@ async def save_file(file: UploadFile):
     """
     Save the uploaded file to a specific location.
     """
-    config = env.get_config()
+    config = env_utils.get_config()
     asset_dir = os.path.join(config['asset_store_path'], 'assets')
-    fs.check_or_create_directory(asset_dir)
+    fs_utils.check_or_create_directory(asset_dir)
     unique_id = uuid.uuid4()
     file_location = os.path.join(asset_dir, f"{unique_id}_{file.filename}")
     with open(file_location, "wb") as f:

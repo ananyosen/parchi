@@ -20,7 +20,7 @@ WORKDIR /src
 
 RUN pip install -r requirements.txt
 
-RUN python -m app.scripts.models
+RUN python -m app.scripts.download_models
 
 ENV ASSET_STORE_PATH=/data/assets/
 ENV PERSIST_PATH=/data/persist/

@@ -1,8 +1,8 @@
 import threading
 import time
 
-from ..repositories.primary import tasks as task_repo
-from ..tasks.ml import extract_text_from_asset, index_text_to_vector_db
+from ..repositories.primary import tasks_repo as task_repo
+from ..tasks.ml_tasks import extract_text_from_asset, index_text_to_vector_db
 
 job_lock = threading.Lock()
 

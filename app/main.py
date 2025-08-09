@@ -6,13 +6,13 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.gzip import GZipMiddleware
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from .constants.env import FRONTEND_BUILD_DIR, FRONTEND_ASSETS_DIR
+from .constants.env_constants import FRONTEND_BUILD_DIR, FRONTEND_ASSETS_DIR
 
 from .repositories.primary.db import initialize_db
 
-from .routers import docs, tasks
+from .routers import docs_router, tasks_router
 
-from .utils import env
+from .utils import env_utils
 from .utils.cached_static_file import CacheControlledStaticFiles
 from .jobs import jobs as scheduler_jobs
 
@@ -29,8 +29,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
-app.include_router(docs.router, prefix="/api")
-app.include_router(tasks.router, prefix="/api")
+app.include_router(docs_router.router, prefix="/api")
+app.include_router(tasks_router.router, prefix="/api")
 
 @app.get("/api/health-check")
 def health_check():
@@ -48,4 +48,4 @@ async def serve_index():
 async def serve_react_app(full_path: str):
     return FileResponse(os.path.join(FRONTEND_BUILD_DIR, "index.html"))
 
-env.validate_env_variables()
+env_utils.validate_env_variables()

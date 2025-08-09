@@ -4,10 +4,10 @@ import json
 import uuid
 
 from ..models.task import Task
-from ..repositories.primary import tasks as task_repo
-from ..repositories.primary import assets as asset_repo
+from ..repositories.primary import tasks_repo as task_repo
+from ..repositories.primary import assets_repo as asset_repo
 from ..repositories.vector import ml as ml_repo
-from ..constants.types import IMAGE_CONTENT_TYPES
+from ..constants.type_constants import IMAGE_CONTENT_TYPES
 
 def extract_text_from_asset(extract_task: Task) -> str:
     """Extract text from an image associated with a task.

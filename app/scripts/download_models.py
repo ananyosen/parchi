@@ -1,7 +1,7 @@
 from sentence_transformers import SentenceTransformer
 
-from ..constants.types import TRANSFORMER_MODEL_NAME
-from ..utils.fs import get_model_path
+from ..constants.type_constants import TRANSFORMER_MODEL_NAME
+from ..utils.fs_utils import get_model_path
 
 def download_model():
     model = SentenceTransformer(TRANSFORMER_MODEL_NAME)

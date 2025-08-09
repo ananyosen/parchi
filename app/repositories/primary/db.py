@@ -1,12 +1,12 @@
 from contextlib import contextmanager
 import sqlite3
 
-from ...utils import fs
+from ...utils import fs_utils
 
 @contextmanager
 def db_session():
     """Context manager for database sessions."""
-    conn = sqlite3.connect(fs.get_primary_db_path())
+    conn = sqlite3.connect(fs_utils.get_primary_db_path())
     conn.row_factory = sqlite3.Row
     try:
         yield conn
