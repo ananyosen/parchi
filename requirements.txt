@@ -3,11 +3,12 @@ python-multipart
 pytesseract
 apscheduler
 
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch == 2.8.0+cpu
 chromadb
 langchain
 langchain-community
 sentence-transformers
-torch
 transformers
 langchain-huggingface
 langchain-chroma
